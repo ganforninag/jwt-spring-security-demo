@@ -1,5 +1,6 @@
 package org.zerhusen.security.controller;
 
+import java.util.List;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.zerhusen.model.CatalogoEntity;
+import org.zerhusen.repository.CatalogoRepository;
 import org.zerhusen.security.JwtAuthenticationRequest;
 import org.zerhusen.security.JwtTokenUtil;
 import org.zerhusen.security.JwtUser;
@@ -37,6 +40,9 @@ public class AuthenticationRestController {
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
+    private CatalogoRepository catalogoRepository;
+
+    @Autowired
     @Qualifier("jwtUserDetailsService")
     private UserDetailsService userDetailsService;
 
@@ -48,6 +54,13 @@ public class AuthenticationRestController {
         // Reload password post-security so we can generate the token
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails);
+
+        //Prueba
+        List<CatalogoEntity> catalogoEntityList = catalogoRepository.findAll();
+        List<CatalogoEntity> catalogoEntityList2 = catalogoRepository.findAll();
+
+        System.out.println("catalogoEntityList = [" + catalogoEntityList + "]");
+        System.out.println("catalogoEntityList2 = [" + catalogoEntityList2 + "]");
 
         // Return the token
         return ResponseEntity.ok(new JwtAuthenticationResponse(token));
